@@ -1,0 +1,36 @@
+﻿@model MimoHitoma2.ViewModels.UploadViewModel
+
+@{
+    ViewBag.Title = "Upload Image";
+}
+
+<h2>上傳圖片</h2>
+@*
+<form action="@Url.Action("Image")" method="post" enctype="multipart/form-data">
+    *@
+ @using (Html.BeginForm("Image", "Upload", FormMethod.Post, new { enctype = "multipart/form-data" }))
+ { 
+    <div style="margin-top:30px">
+        <p style="font-size:large;color:blue">上傳說明</p>
+        <p style="color:red;">&nbsp;&nbsp;&nbsp;&nbsp;檔案大小必須小於10MB<br />&nbsp;&nbsp;&nbsp;&nbsp;僅接受副檔名為 .jpg, .png, .bmp 的檔案格式</p>
+        <input type="file" name="file" id="file" />
+        <p style="font-size:large;color:blue">圖片標籤:</p>
+        <p style="color:red">&nbsp;&nbsp;&nbsp;&nbsp;請至少填寫一項標籤，若輸入超過一個標籤，請以逗號分開&nbsp (&nbsp'&nbsp,&nbsp'&nbsp)&nbsp</p>
+        
+                @*
+        <input type="text" name = "imageTag" id="imageTag" style="width:300px" /><br /><br />
+            @Html.TextBoxFor(Model => Model.imageTags, new { @onkeyup = "SearchBar_OnKeyUp();"  })
+        *@
+        
+        @Html.TextBoxFor(Model => Model.imageTags, new {@id = "input-tag-frame", @onkeyup = "SearchBar_OnKeyUp()" })
+
+        <input type="submit" /><br /><br />
+
+    </div>
+ } 
+        
+@*        
+</form>
+    *@
+
+

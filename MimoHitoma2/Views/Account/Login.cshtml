@@ -1,0 +1,43 @@
+﻿@model MimoHitoma2.ViewModels.LoginViewModel
+
+@{
+    @Styles.Render("~/Content/css")
+    
+    Layout = null;
+    <title>Login | MimoHitoma2</title>
+}
+
+<div id="fixed-top">
+    <div id="main-logo">
+        <p>Mimo Hitoma</p>
+    </div>
+</div>
+<div id="content">
+    @if (Request.IsAuthenticated)
+    {
+        <p>您已經登入</p>
+       
+        using (Html.BeginForm("Search", "Post", FormMethod.Get))
+        {
+            <input type="submit" value="首頁" />
+        }
+    }
+    else
+    {
+        <h2>請先登入以瀏覽此網站</h2>
+        using (Html.BeginForm("Login", "Account", FormMethod.Post))
+        {
+            <label>帳號:</label>
+            @Html.TextBoxFor(Model => Model.account)
+            <br /><br />
+            <label>密碼:</label>
+            @Html.PasswordFor(Model => Model.password)
+
+            <br /><br />
+            <input type="submit" value="提交" />
+            <p style="color:red">@ViewData["ErrorMessage"]</p>
+        }
+    }
+</div>
+    
+

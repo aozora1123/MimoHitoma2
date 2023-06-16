@@ -1,0 +1,61 @@
+﻿@*
+    * Post後導向Upload Status頁面，透過TempData的值決定顯示內容
+    *
+    * TempData的value分別代表
+    * 200: 上傳成功
+    * 400: 上傳失敗，稍後再試 (發生Exception)
+    * 401: 未選擇要上傳的檔案
+    * 402: 上傳格式錯誤
+    * 403: 檔案大小超過限制
+    * 404: 輸入Tag為空白 (至少需填寫一項)
+    * 405: 輸入Tag不符合規定 (發生Exception)
+    */
+*@
+
+@{
+    ViewBag.Title = "Upload Status";
+}
+
+
+@if (TempData["UploadStatus"] != null)
+{
+    if (!String.IsNullOrEmpty(TempData["UploadStatus"].ToString()))
+    {
+        string statusText = "";
+        
+        switch(TempData["UploadStatus"].ToString())
+        {
+            case "200":
+                statusText = "上傳完成";
+                break;
+            case "400":
+                statusText = "上傳失敗，請稍後再試";
+                break;
+            case "401":
+                statusText = "請先選擇欲上傳的檔案";
+                break;
+            case "402":
+                statusText = "上傳格式錯誤，僅接受副檔名為.jpg, .png, .bmp的檔案";
+                break;
+            case "403":
+                statusText = "上傳檔案大小超過10MB的限制";
+                break;
+            case "404":
+                statusText = "Tag不可為空白";
+                break;
+            case "405":
+                statusText = "輸入Tag不符合規定，請重新輸入";
+                break;
+            default:
+                statusText = "發生異常，請稍後再嘗試或聯絡管理員";
+                break;
+        }
+        
+        <br /><h2 style="color:darkred">@statusText</h2>
+    }
+    <br /><a href="/MimoHitoma2/Upload/Image/" style="text-decoration:none">按此回到上傳頁面</a><br /><br />    
+}
+else
+{
+    <br /><br /><br /><a href="/MimoHitoma2/Upload/Image/" style="text-decoration:none">按此回到上傳頁面</a><br /><br />
+}

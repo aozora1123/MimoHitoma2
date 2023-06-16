@@ -1,0 +1,64 @@
+﻿@using Microsoft.AspNet.Identity
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title | MimoHitoma2</title>
+    @Styles.Render("~/Content/css")
+</head>
+<body>
+    <div>
+        <div id="fixed-top">
+            <div id="main-logo">
+                <p>Mimo Hitoma</p>
+            </div>
+            <div style="text-align:right;padding-top:25px;padding-right:20px">
+            @{
+                if (Request.IsAuthenticated)
+                {
+                    using(Html.BeginForm("Logout", "Account", FormMethod.Post))
+                    {
+                        <label style="color:#cc0f35; font-size: large;font-weight:600;font-family: 'Times New Roman',serif;">
+                                    Welcome @User.Identity.Name.ToString()</label>
+                        <input type="submit" value="登出" />
+                    }
+                }
+                else
+                {
+                    using (Html.BeginForm("Login","Account",FormMethod.Post))
+                    {
+                        <input type="submit" value="登入" />
+                    }
+                }
+            }
+            </div>
+        </div>
+        <div id="content">
+            <div id="function-bar">
+                <ul id="function-list-bar">
+                    <li class="function-member">
+                        <a class="function-member" href="~/">首頁</a>
+                    </li>
+                    <li class="function-member">
+                        <a class="function-member" >會員專區</a>
+                    </li>
+                    <li class="function-member">
+                        <a class="function-member" href="~/Upload/Image">上傳圖片</a>
+                    </li>
+                </ul>
+            </div>
+            @RenderBody()
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.0/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href=" https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.0/themes/smoothness/jquery-ui.css" />
+    @Scripts.Render("~/Scripts/js")
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet" />
+</body>
+</html>

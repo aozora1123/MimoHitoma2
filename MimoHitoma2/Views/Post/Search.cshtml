@@ -1,0 +1,225 @@
+﻿@model MimoHitoma2.ViewModels.SearchViewModel
+
+@if(!String.IsNullOrEmpty(Model.GetQueryValue(Model.queries,"tags")))
+{
+    ViewBag.Title = "Search: " + Model.GetQueryValue(Model.queries, "tags");
+}
+else
+{
+    ViewBag.Title = "Home";    
+}
+
+
+@helper CreateImagePreviewAndLink(string hrefStr, string srcStr, string titleStr, string altStr)
+{
+    <span class="thumb">
+        <a href="@hrefStr" target="_blank">
+            <img class="preview" src="@srcStr" title="@titleStr" alt="@altStr" />
+        </a>
+    </span>
+}
+
+@helper CreatePageNumberMember(string href, string innetText)
+{
+
+    string extendCssStyle = "";
+    if (innetText == "◀" || innetText == "▶")
+    {
+        extendCssStyle = " style=width:20px";
+
+    }
+
+    <td class="page-number-member" @extendCssStyle>
+        @{
+            if (String.IsNullOrEmpty(href))
+            {
+                <a class="page-number-member">@innetText</a>
+            }
+            else
+            {
+                <a class="page-number-member" href="@href">@innetText</a>
+            }
+        }
+    </td>
+}
+
+@helper CreatePageNumberTable()
+{
+    <table class="page-number-table" cellspacing="0" align="right" border="1">
+        <tbody>
+            <tr>
+                @{
+                    long headPageNumber = 1;
+                    long tailPageNumber = Model.totalNumberOfPages_correspondingQueryTags;
+                    long currentPageNumber = Model.currentShowPageNumber;
+                    string innerText = "";
+                    string href = "";
+                    string pageStr = "&page=";
+
+                    // 若User在URL列輸入超過總頁數的數字，則換頁頁籤僅顯示允許範圍的頁數
+                    if (currentPageNumber > tailPageNumber)
+                    {
+                        currentPageNumber = tailPageNumber + 1;
+                    }
+
+                    // 上一頁
+                    innerText = "◀";
+                    if ((currentPageNumber - 1) >= headPageNumber)
+                    {
+                        href = "/MimoHitoma2/Post/Search?" + Model.queryString_withoutPageParemeter.ToString() + pageStr + (currentPageNumber - 1).ToString();
+                    }
+                    else
+                    {
+                        href = "";
+                    }
+                    @CreatePageNumberMember(href, innerText)
+
+                    // 第一頁
+                    innerText = headPageNumber.ToString();
+                    if(currentPageNumber != headPageNumber)
+                    {
+                        href = "/MimoHitoma2/Post/Search?" + Model.queryString_withoutPageParemeter.ToString() + pageStr + headPageNumber.ToString();
+                    }
+                    else
+                    {
+                        href = "";
+                    }
+                    @CreatePageNumberMember(href, innerText)
+
+                    // 當前頁的前兩頁到第一頁之間的提示
+                    long preprePageNumber = currentPageNumber - 2;
+                    if(preprePageNumber > headPageNumber)
+                    {
+                        innerText = "...";
+                        href = "";
+                        @CreatePageNumberMember(href, innerText)
+                    }
+
+                    // 當前頁的前一頁 
+                    if(currentPageNumber <= tailPageNumber)
+                    {
+                        long prePageNumber = currentPageNumber - 1;
+                        if(prePageNumber > headPageNumber)
+                        {
+                            innerText = prePageNumber.ToString();
+                            href = "/MimoHitoma2/Post/Search?" + Model.queryString_withoutPageParemeter.ToString() + pageStr + prePageNumber.ToString();
+                            @CreatePageNumberMember(href, innerText)
+                        }
+                    }
+                                                 
+                    // 當前頁 (不等於第一頁或最後一頁才顯示)
+                    if((currentPageNumber > headPageNumber) && (currentPageNumber < tailPageNumber))
+                    {
+                        innerText = currentPageNumber.ToString();
+                        href = "";
+                        @CreatePageNumberMember(href, innerText)
+                    }
+                          
+                    // 當前頁的下一頁
+                    long nextPageNumber = currentPageNumber + 1;
+                    if(nextPageNumber < tailPageNumber)
+                    {
+                        innerText = nextPageNumber.ToString();
+                        href = "/MimoHitoma2/Post/Search?" + Model.queryString_withoutPageParemeter.ToString() + pageStr + nextPageNumber.ToString();
+                        @CreatePageNumberMember(href, innerText)
+                    }
+                        
+                    // 當前頁的下兩頁到最後一頁之間的提示
+                    long nextnextPageNumber = currentPageNumber + 2;
+                    if(nextnextPageNumber < tailPageNumber)
+                    {
+                        innerText = "...";
+                        href = "";
+                        @CreatePageNumberMember(href, innerText)
+                    }
+                        
+                    // 最末頁
+                    if(tailPageNumber > headPageNumber)
+                    {
+                        innerText = tailPageNumber.ToString();
+                        if(currentPageNumber != tailPageNumber)
+                        {
+                            href = "/MimoHitoma2/Post/Search?" + Model.queryString_withoutPageParemeter.ToString() + pageStr + tailPageNumber.ToString();
+                        }
+                        else
+                        {
+                            href = "";
+                        }
+                        @CreatePageNumberMember(href, innerText)
+                    }
+                        
+                    // 下一頁
+                    innerText = "▶";
+                    if ((currentPageNumber + 1) <= tailPageNumber)
+                    {
+                        href = "/MimoHitoma2/Post/Search?" + Model.queryString_withoutPageParemeter.ToString() + pageStr + (currentPageNumber + 1).ToString();
+                    }
+                    else
+                    {
+                        href = "";
+                    }
+                    @CreatePageNumberMember(href, innerText)
+                }
+            </tr>
+        </tbody>
+    </table>
+}
+
+
+
+<div id="side-bar">
+    <div style="text-align:left;padding-left:10px">
+        <h2>Search:</h2>
+        <form id="searchForm" onsubmit="return searchBarSubmit()">
+            <input type="text" name="input-tag-frame" id="input-tag-frame" style="width:150px" onkeyup="SearchBar_OnKeyUp()" />
+            <input type="submit" name="searchTagBTN" hidden="hidden" />
+        </form>
+    </div>
+    <ul id="tag-side-bar">
+        @for (int i = 0; i < Model.imageTags.all_tags_list_without_duplication.Count; i++)
+        {
+            string tag = @Model.imageTags.all_tags_list_without_duplication[i];   
+            <li class="tag-type-general">
+                @if(i < 3) // 前三相關的Tags，用不同顏色顯示
+                {
+                    <a class= @string.Format("tag-type-related-{0}", (i + 1).ToString()) href="/MimoHitoma2/Post/Search?tags=@tag" title="@tag">@tag</a>
+                }
+                else
+                {
+                    <a class="tag-type-general" href="/MimoHitoma2/Post/Search?tags=@tag" title="@tag">@tag</a>
+                }                   
+            </li>
+        }
+    </ul>
+</div>
+<div id="post-content">
+    @if (Model.popularImages.count > 0)
+    {
+        <div id="popular-previews">
+            <div style="margin:5px auto; text-align:center">
+                <img src="/data/Images/Icon/crown.png" title="Populars" />
+            </div>
+            @for (int i = 0; i < Model.popularImages.count; i++)
+            { 
+                @CreateImagePreviewAndLink(Model.popularImages.href[i], Model.popularImages.previewSrc[i], Model.popularImages.previewTitle[i], "")
+            }  
+        </div>
+        <div id="related-images">
+            @for (int i = 0; i < Model.relatedImages.count; i++)
+            {
+                @CreateImagePreviewAndLink(Model.relatedImages.href[i], Model.relatedImages.previewSrc[i], Model.relatedImages.previewTitle[i], "")
+            }
+        </div>
+        <div class="page-number-frame">
+            @CreatePageNumberTable()
+            <form id="redirectPageForm" onsubmit="return redirectPageSubmit()">
+                <input type="text" name="redirect-page-frame" id="redirect-page-frame" style="width:30px;height:20px;text-align:center; margin:2px 15px 2px 5px "/>
+                <input type="submit" name="redirectPageBTN" hidden="hidden" />
+            </form>
+        </div>
+    }
+    else
+    {
+        <h2 style="margin-top:60px">查詢不到相關資料</h2>
+    }
+</div>

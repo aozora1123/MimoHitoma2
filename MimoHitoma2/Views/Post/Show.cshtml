@@ -1,0 +1,37 @@
+﻿@model MimoHitoma2.ViewModels.ShowViewModel
+
+@{
+    ViewBag.Title = "Show";
+}
+
+<div id="side-bar">
+    <div style="text-align:left;padding-left:10px">
+        <h2>Search:</h2>
+        <form id="searchForm" onsubmit="return searchBarSubmit()">
+            <input type="text" name="input-tag-frame" id="input-tag-frame" style="width:150px" onkeyup="SearchBar_OnKeyUp()" />
+            <input type="submit" name="searchTagBTN" hidden="hidden" />
+        </form>
+    </div>
+    <ul id="tag-side-bar">
+        @for(int i = 0 ;i < Model.postImage.imageTags.all_tags_list_without_duplication.Count; i++)
+        {
+            string tag = @Model.postImage.imageTags.all_tags_list_without_duplication[i];
+            <li class="tag-type-general">
+                <a class="tag-type-general" href="/MimoHitoma2/Post/Search?tags=@tag" title="@tag">@tag</a>
+            </li>
+        }   
+    </ul>
+</div>
+<div id="post-content-image">
+    <a href="@Model.postImage.href" target="_blank">
+        <img src="@Model.postImage.src" />
+    </a>
+</div>
+    
+    
+        
+            
+    
+
+
+
